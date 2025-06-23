@@ -1,6 +1,31 @@
 # Reservation-Service Module Low-Level Documentation
 
 This document provides a low-level overview of the `Reservation-Service` module, a microservice within the Parking Management System (PMS) responsible for managing parking slot reservations.
+---
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)  
+   - [Features](#features)
+
+2. [Architecture](#2-architecture)  
+   - [High-Level Architecture](#21-high-level-architecture)  
+   - [Layered Architecture Diagram](#22-layered-architecture-diagram)  
+   - [Technologies Used](#23-technologies-used)
+
+3. [Database Design](#3-database-design)  
+   - [Reservation Table](#31-reservation-table)
+
+4. [API Endpoints](#4-api-endpoints)  
+   - [Reservation Management](#41-reservation-management)  
+   - [Sequence Diagram](#42-sequence-diagram)  
+   - [Swagger Documentation](#43-swagger-documentation)
+
+5. [Error Handling](#5-error-handling)
+
+6. [Dependencies](#6-dependencies)
+
+7. [Deployment](#7-deployment)
 
 ---
 
