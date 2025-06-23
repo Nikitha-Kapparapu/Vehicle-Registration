@@ -101,7 +101,7 @@ sequenceDiagram
     ReservationDB-->>ReservationService: Confirm insert
     ReservationService-->>API Gateway: Reservation created
     API Gateway-->>User: Return reservation response
-
+```
 ### 4.3 Swagger Documentation
 
 Detailed API documentation can be found via Swagger UI, typically available at `/swagger-ui.html` when the service is running.
