@@ -130,7 +130,9 @@ sequenceDiagram
 ```
 ### 4.3 Swagger Documentation
 
-Detailed API documentation can be found via Swagger UI, typically available at `/swagger-ui.html` when the service is running.
+Comprehensive API documentation is available via Swagger UI, typically accessible at:  
+[**http://localhost:8080/swagger-ui.html**](http://localhost:8080/swagger-ui.html)
+
 
 ---
 
