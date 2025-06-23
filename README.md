@@ -32,29 +32,14 @@ The **Reservation-Service** is a Spring Boot-based application that manages park
 The Registration-Service module is built using the Spring Boot framework and adheres to a layered architecture. It communicates with other services via REST APIs and utilizes H2 as its database for local development purposes.
 
 ### 2.2 Layered Architecture
-```mermaid
-graph TD
-    UI[User Interface]
-    API[ReservationController (REST API)]
-    Service[ReservationServiceImpl (Business Logic)]
-    Repo[ReservationRepository (JPA Repository)]
-    DB[(Reservations Table)]
 
-    UI --> API
-    API --> Service
-    Service --> Repo
-    Repo --> DB
+<pre><code>```mermaid graph TD UI[User Interface] API[ReservationController (REST API)] Service[ReservationServiceImpl (Business Logic)] Repo[ReservationRepository (JPA Repository)] DB[(Reservations Table)]
 
-    subgraph Integration
-        AuthService[Auth-Service]
-        UserService[User-Service]
-        SlotService[Slot-Availability-Service]
-    end
+UI --> API API --> Service Service --> Repo Repo --> DB
 
-    Service --> AuthService
-    Service --> UserService
-    Service --> SlotService
-```
+subgraph Integration AuthService[Auth-Service] UserService[User-Service] SlotService[Slot-Availability-Service] end
+
+Service --> AuthService Service --> UserService Service --> SlotService
 
 ### 2.3 Technologies Used
 
