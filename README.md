@@ -45,6 +45,7 @@ graph TD
     D --> E[Reservations Database]
     A -- Registers and Discovers --> F[Eureka Discovery Service]
     C -- Registers and Discovers --> F
+```
 ### 2.3 Technologies Used
 
 - **Framework:** Spring Boot  
