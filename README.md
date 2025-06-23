@@ -27,9 +27,6 @@ The `Reservation-Service` module is a critical component of the PMS, enabling us
   - Allows users to cancel an existing reservation.
   - Updates reservation status accordingly by checking slot availability.
 
-- **Conflict Management**
-  - Uses custom queries to detect time-based slot overlaps.
-
 ---
 
 ## 2. Architecture
