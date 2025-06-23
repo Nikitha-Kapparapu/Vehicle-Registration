@@ -1,27 +1,34 @@
 # Reservation-Service Module Low-Level Documentation
 
-This document provides a low-level overview of the Reservation-Service module, a microservice within the Parking Management System (PMS) responsible for managing parking slot reservations.
+This document provides a low-level overview of the `Reservation-Service` module, a microservice within the Parking Management System (PMS) responsible for managing parking slot reservations.
 
 ---
 
 ## 1. Project Overview
 
-The **Reservation-Service** is a Spring Boot-based application that manages parking slot reservations. It offers RESTful APIs for creating, updating, retrieving, and cancelling reservations. The service interacts with a database to persist reservation data and follows a layered architecture to ensure scalability and maintainability.
+The `Reservation-Service` module is a critical component of the PMS, enabling users to create, update, view, and cancel parking slot reservations. It ensures data integrity, prevents double bookings, and works seamlessly with user and slot management services.
 
 ### Features
 
 - **Create Reservations**
-    * Accepts reservation requests with slot and time data.
-    * Validates input and checks for overlapping reservations.
-    * Saves the reservation to the database.
-- **Retrieve Reservations**
-    * Fetch reservation(s) by reservation ID or user ID.
-    * Supports querying all reservations for a specific user.
-- **Update Reservations** 
-    * Allows users to reschedule bookings with updated time slots and vehicle information.
+  - Accepts requests to book a parking slot for a specific time frame.
+  - Validates availability before creating a record.
+  - Prevents overlapping reservations for the same slot.
+
+- **View Reservations**
+  - Fetch reservations by user ID or reservation ID.
+  - Supports filtering and sorting for better usability.
+
+- **Update Reservations**
+  - Allows modification of slot, time window, or vehicle number.
+  - Validates updated data to avoid conflicts.
+
 - **Cancel Reservations**
-    * Deletes an existing reservation.
-    * Ensures slot availability updates accordingly.
+  - Allows users to cancel an existing reservation.
+  - Updates reservation status accordingly by checking slot availability.
+
+- **Conflict Management**
+  - Uses custom queries to detect time-based slot overlaps.
 
 ---
 
@@ -29,9 +36,9 @@ The **Reservation-Service** is a Spring Boot-based application that manages park
 
 ### 2.1 High-Level Architecture
 
-The Registration-Service module is built using the Spring Boot framework and adheres to a layered architecture. It communicates with other services via REST APIs and utilizes H2 as its database for local development purposes.
+The `Reservation-Service` follows a **layered architecture** using **Spring Boot** and communicates with other PMS modules via REST APIs. The service relies on a relational database (e.g., MySQL or H2) to manage persistence.
 
-### 2.2 Layered Architecture
+### 2.2 Layered Architecture Diagram
 
 ```mermaid
 graph TD
@@ -41,64 +48,3 @@ graph TD
     D --> E[Reservations Database]
     A -- Registers and Discovers --> F[Eureka Discovery Service]
     C -- Registers and Discovers --> F
-
-```
-
-
-
-### 2.3 Technologies Used
-
-- **Framework**: Spring Boot  
-- **Database**: H2 / MySQL  
-- **Language**: Java  
-- **Build Tool**: Maven  
-
----
-
-## 3. Database Design
-
-### 3.1 Table: `reservations`
-
-| Column Name      | Data Type | Constraints                     |
-|------------------|-----------|----------------------------------|
-| reservation_id   | bigint    | Primary Key, Auto Increment      |
-| user_id          | bigint    | Not Null                         |
-| slot_id          | bigint    | Not Null                         |
-| vehicle_number   | varchar   | Not Null                         |
-| start_time       | datetime  | Not Null                         |
-| end_time         | datetime  | Not Null                         |
-| status           | varchar   | Not Null                         |
-
----
-
-## 4. API Endpoints
-
-### 4.1 Reservation Management
-
-| Endpoint                             | Method | Description                       | Request Body / Params       |
-|--------------------------------------|--------|-----------------------------------|-----------------------------|
-| `/api/reservations`                 | POST   | Create a new reservation          | ReservationRequest          |
-| `/api/reservations/user/{userId}`  | GET    | Get all reservations for a user   | userId (Path Variable)      |
-| `/api/reservations/{id}`           | GET    | Get reservation by ID             | id (Path Variable)          |
-| `/api/reservations/{id}`           | PUT    | Update reservation details        | ReservationUpdateRequest    |
-| `/api/reservations/{id}`           | DELETE | Cancel a reservation              | id (Path Variable)          |
-
----
-
-## 5. Application Flow
-
-1. **User Interaction** – via REST API requests.
-2. **Controller Layer** – maps requests to service methods.
-3. **Service Layer** – executes business logic.
-4. **Repository Layer** – communicates with the database.
-5. **Database** – stores and manages reservation records.
-
----
-
-## 6. Error Handling
-
-Spring Boot’s exception handling is used to provide appropriate HTTP responses.
-
-| Error Code | Description                     |
-|------------|---------------------------------|
-| 400        |
