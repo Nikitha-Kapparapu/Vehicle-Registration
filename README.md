@@ -107,7 +107,6 @@ sequenceDiagram
 Detailed API documentation can be found via Swagger UI, typically available at `/swagger-ui.html` when the service is running.
 
 ---
----
 
 ## 5. Error Handling
 
@@ -139,7 +138,7 @@ All error responses include a message and timestamp, aiding in debugging and use
 
 The `Reservation-Service` module can be run locally or deployed as a Docker container. It registers with Eureka for service discovery and can scale independently within a microservices ecosystem.
 
-### Sample Application Properties
+### Key Configuration
 
 ```properties
 spring.application.name=reservation-service
