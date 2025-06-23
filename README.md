@@ -33,13 +33,18 @@ The Registration-Service module is built using the Spring Boot framework and adh
 
 ### 2.2 Layered Architecture
 
-<pre><code>```mermaid graph TD UI[User Interface] API[ReservationController (REST API)] Service[ReservationServiceImpl (Business Logic)] Repo[ReservationRepository (JPA Repository)] DB[(Reservations Table)]
+```mermaid
+graph TD
+    A[API Gateway] --> B[Reservation Controller]
+    B --> C[Reservation Service]
+    C --> D[Reservation Repository]
+    D --> E[Reservations Database]
+    A -- Registers and Discovers --> F[Eureka Discovery Service]
+    C -- Registers and Discovers --> F
 
-UI --> API API --> Service Service --> Repo Repo --> DB
+```
 
-subgraph Integration AuthService[Auth-Service] UserService[User-Service] SlotService[Slot-Availability-Service] end
 
-Service --> AuthService Service --> UserService Service --> SlotService
 
 ### 2.3 Technologies Used
 
