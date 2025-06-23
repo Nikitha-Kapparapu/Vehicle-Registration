@@ -45,3 +45,109 @@ graph TD
     D --> E[Reservations Database]
     A -- Registers and Discovers --> F[Eureka Discovery Service]
     C -- Registers and Discovers --> F
+### 2.3 Technologies Used
+
+- **Framework:** Spring Boot  
+- **Database:** H2 / MySQL  
+- **Language:** Java  
+- **Build Tool:** Maven
+
+---
+
+## 3. Database Design
+
+### 3.1 Reservation Table
+
+| Column Name       | Data Type  | Description                             |
+|-------------------|------------|-----------------------------------------|
+| `reservation_id`  | bigint     | Primary key, auto-generated             |
+| `user_id`         | bigint     | Foreign key to User table               |
+| `slot_id`         | bigint     | Foreign key to ParkingSlot table        |
+| `vehicle_number`  | varchar    | Vehicle registration number             |
+| `start_time`      | datetime   | Reservation start time                  |
+| `end_time`        | datetime   | Reservation end time                    |
+| `status`          | varchar    | Reservation status (e.g., Active, Canceled) |
+
+---
+
+## 4. API Endpoints
+
+### 4.1 Reservation Management
+
+| Endpoint                                | Method  | Description                      | Request/Params                          |
+|-----------------------------------------|---------|----------------------------------|------------------------------------------|
+| `/api/reservations`                     | POST    | Create a new reservation         | Reservation object (JSON)               |
+| `/api/reservations/user/{userId}`       | GET     | Get reservations for a user      | `userId` as path variable                |
+| `/api/reservations/{id}`                | GET     | Get reservation by ID            | `id` as path variable                    |
+| `/api/reservations/{id}`                | PUT     | Update an existing reservation   | Updated fields in request body          |
+| `/api/reservations/{id}`                | DELETE  | Cancel a reservation             | `id` as path variable                    |
+
+---
+
+### 4.2 Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant API Gateway
+    participant ReservationService
+    participant ReservationDB
+
+    User->>API Gateway: POST /api/reservations (Reservation object)
+    API Gateway->>ReservationService: Route request
+    ReservationService->>ReservationService: Validate and check conflicts
+    ReservationService->>ReservationDB: Save reservation
+    ReservationDB-->>ReservationService: Confirm insert
+    ReservationService-->>API Gateway: Reservation created
+    API Gateway-->>User: Return reservation response
+
+### 4.3 Swagger Documentation
+
+Detailed API documentation can be found via Swagger UI, typically available at `/swagger-ui.html` when the service is running.
+
+---
+---
+
+## 5. Error Handling
+
+The module uses Spring Boot's global exception handling mechanisms to ensure consistent and descriptive error responses.
+
+| HTTP Status Code | Description                          |
+|------------------|--------------------------------------|
+| `400 Bad Request`| Invalid input or request parameters  |
+| `404 Not Found`  | Reservation does not exist           |
+| `409 Conflict`   | Overlapping reservation or slot issue|
+| `500 Internal Server Error` | Unexpected server-side failure |
+
+All error responses include a message and timestamp, aiding in debugging and user communication.
+
+---
+
+## 6. Dependencies
+
+- `spring-boot-starter-web`: For building REST APIs  
+- `spring-boot-starter-data-jpa`: ORM and data persistence  
+- `spring-boot-starter-validation`: Input validation  
+- `H2` or `MySQL` driver: Database connectivity  
+- `lombok`: For minimizing boilerplate code  
+- `junit`, `mockito`: Unit and integration testing
+
+---
+
+## 7. Deployment
+
+The `Reservation-Service` module can be run locally or deployed as a Docker container. It registers with Eureka for service discovery and can scale independently within a microservices ecosystem.
+
+### Sample Application Properties
+
+```properties
+spring.application.name=reservation-service
+server.port=8020
+
+spring.datasource.url=jdbc:h2:file:./data/reservationDB;DB_CLOSE_DELAY=-1
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
