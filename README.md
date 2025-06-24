@@ -65,12 +65,11 @@ The `Reservation-Service` follows a **layered architecture** using **Spring Boot
 
 ```mermaid
 graph TD
-    A[API Gateway] --> B[Reservation Controller]
+    A[Reservation-Service] --> B[Reservation Controller]
     B --> C[Reservation Service]
     C --> D[Reservation Repository]
-    D --> E[Reservations Database]
-    A -- Registers and Discovers --> F[Eureka Discovery Service]
-    C -- Registers and Discovers --> F
+    D --> E[Reservation Database]
+    A --> F[Eureka Discovery Service]
 ```
 ### 2.3 Technologies Used
 
