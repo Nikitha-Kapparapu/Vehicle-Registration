@@ -62,15 +62,54 @@ The `Reservation-Service` module is a critical component of the PMS, enabling us
 The `Reservation-Service` follows a **layered architecture** using **Spring Boot** and communicates with other PMS modules via REST APIs. The service relies on a relational database (e.g., MySQL or H2) to manage persistence.
 
 ### 2.2 Layered Architecture Diagram
-
 ```mermaid
-graph TD
-    A[Reservation-Service] --> B[Reservation Controller]
-    B --> C[Reservation Service]
-    C --> D[Reservation Repository]
-    D --> E[Reservation Database]
-    A --> F[Eureka Discovery Service]
+flowchart LR
+
+  %% Groups
+  subgraph Frontend [React Frontend]
+    direction TB
+    F1[Reservation UI Components]
+    F2[Reservation API Client]
+  end
+
+  subgraph Backend [Spring Boot Backend]
+    direction TB
+    B1[ReservationController]
+    B2[ReservationService]
+    B3[ReservationRepository]
+  end
+
+  subgraph Database [Relational Database]
+    direction TB
+    D1[(Reservations Table)]
+  end
+
+  %% DTO and Entity
+  E1[Reservation DTO]
+  E2[Reservation Entity]
+
+  %% Connections
+  F2 -->|HTTP/REST| B1
+  B1 -->|Calls| B2
+  B2 -->|Calls| B3
+  B3 -->|ORM / JDBC| D1
+
+  B1 ---|uses| E1
+  B3 ---|maps to| E2
+
+  %% Styling
+  classDef frontend fill:#dae8fc,stroke:#6c8ebf,color:#1a237e
+  classDef backend fill:#d5e8d4,stroke:#82b366,color:#1b4332
+  classDef storage fill:#e8def8,stroke:#8e44ad,color:#4a148c
+  classDef model fill:#fff2cc,stroke:#d6b656,color:#7f4f24
+
+  class F1,F2 frontend
+  class B1,B2,B3 backend
+  class D1 storage
+  class E1,E2 model
+
 ```
+
 ### 2.3 Technologies Used
 
 - **Framework:** Spring Boot  
