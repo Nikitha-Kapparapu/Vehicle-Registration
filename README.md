@@ -24,7 +24,8 @@ This document provides a low-level overview of the `Reservation-Service` module,
 
 6. [Dependencies](#6-dependencies)  
 
-7. [Deployment](#7-deployment)  
+7. [Deployment](#7-deployment)
+   * [7.1 Run Locally](#71-run-locally)
 
 ---
 
@@ -208,7 +209,7 @@ The `pom.xml` file defines the project's dependencies and build configuration. K
 
 ## 7. Deployment
 
-## Run Locally
+## 7.1 Run Locally
 
 ```bash
 # Clone this repo
