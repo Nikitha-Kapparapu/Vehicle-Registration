@@ -10,17 +10,16 @@ This document provides a low-level overview of the `Reservation-Service` module,
    - [Features](#features)
 
 2. [Architecture](#2-architecture)  
-   - [High-Level Architecture](#21-high-level-architecture)  
-   - [Layered Architecture Diagram](#22-layered-architecture-diagram)  
-   - [Technologies Used](#23-technologies-used)
+   - [Component Diagram](#22-component-diagram)
+   - [Sequence Diagram](#42-sequence-diagram)  
+ 
 
 3. [Database Design](#3-database-design)  
    - [Reservation Table](#31-reservation-table)
 
 4. [API Endpoints](#4-api-endpoints)  
    - [Reservation Management](#41-reservation-management)  
-   - [Sequence Diagram](#42-sequence-diagram)  
-   - [Swagger Documentation](#43-swagger-documentation)
+   - [Swagger Documentation](#42-swagger-documentation)
 
 5. [Error Handling](#5-error-handling)
 
@@ -34,7 +33,7 @@ This document provides a low-level overview of the `Reservation-Service` module,
 
 The `Reservation-Service` module is a critical component of the PMS, enabling users to create, update, view, and cancel parking slot reservations. It ensures data integrity, prevents double bookings, and works seamlessly with user and slot management services.
 
-### Features
+### 1.1 Features
 
 - **Create Reservations**
   - Accepts requests to book a parking slot for a specific time frame.
@@ -209,18 +208,15 @@ The `pom.xml` file defines the project's dependencies and build configuration. K
 
 ## 7. Deployment
 
-The `Reservation-Service` module can be run locally or deployed as a Docker container. It registers with Eureka for service discovery and can scale independently within a microservices ecosystem.
+## Run Locally
 
-### Key Configuration
+```bash
+# Clone this repo
+git clone <repository-url>
 
-```properties
-spring.application.name=reservation-service
-server.port=8020
+# Navigate to the folder
+cd member-service
 
-spring.datasource.url=jdbc:h2:file:./data/reservationDB;DB_CLOSE_DELAY=-1
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
+# Build and run
+mvn clean install
+mvn spring-boot:run
