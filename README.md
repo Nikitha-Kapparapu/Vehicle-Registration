@@ -60,6 +60,7 @@ The `Reservation-Service` module is a critical component of the PMS, enabling us
 The `Reservation-Service` follows a **layered architecture** using **Spring Boot** and communicates with other PMS modules via REST APIs. The service relies on a relational database (e.g., MySQL or H2) to manage persistence.
 
 ### 2.1 Component Diagram
+
 ```mermaid
 flowchart LR
 
@@ -107,6 +108,7 @@ flowchart LR
   class E1,E2 model
 
 ```
+
 ### 2.2 Sequence Diagram
 
 ```mermaid
