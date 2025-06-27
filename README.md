@@ -57,11 +57,9 @@ The `Reservation-Service` module is a critical component of the PMS, enabling us
 
 ## 2. Architecture
 
-### 2.1 High-Level Architecture
-
 The `Reservation-Service` follows a **layered architecture** using **Spring Boot** and communicates with other PMS modules via REST APIs. The service relies on a relational database (e.g., MySQL or H2) to manage persistence.
 
-### 2.2 Layered Architecture Diagram
+### 2.1 Component Diagram
 ```mermaid
 flowchart LR
 
@@ -109,15 +107,23 @@ flowchart LR
   class E1,E2 model
 
 ```
+### 2.2 Sequence Diagram
 
-### 2.3 Technologies Used
+```mermaid
+sequenceDiagram
+    participant User
+    participant API Gateway
+    participant ReservationService
+    participant ReservationDB
 
-- **Framework:** Spring Boot  
-- **Database:** H2 / MySQL  
-- **Language:** Java  
-- **Build Tool:** Maven
-
----
+    User->>API Gateway: POST /api/reservations (Reservation object)
+    API Gateway->>ReservationService: Route request
+    ReservationService->>ReservationService: Validate and check conflicts
+    ReservationService->>ReservationDB: Save reservation
+    ReservationDB-->>ReservationService: Confirm insert
+    ReservationService-->>API Gateway: Reservation created
+    API Gateway-->>User: Return reservation response
+```
 
 ## 3. Database Design
 
@@ -149,24 +155,7 @@ flowchart LR
 
 ---
 
-### 4.2 Sequence Diagram
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant API Gateway
-    participant ReservationService
-    participant ReservationDB
-
-    User->>API Gateway: POST /api/reservations (Reservation object)
-    API Gateway->>ReservationService: Route request
-    ReservationService->>ReservationService: Validate and check conflicts
-    ReservationService->>ReservationDB: Save reservation
-    ReservationDB-->>ReservationService: Confirm insert
-    ReservationService-->>API Gateway: Reservation created
-    API Gateway-->>User: Return reservation response
-```
-### 4.3 Swagger Documentation
+### 4.2 Swagger Documentation
 
 Comprehensive API documentation is available via Swagger UI, typically accessible at:  
 [**http://localhost:8080/swagger-ui.html**](http://localhost:8080/swagger-ui.html)
@@ -190,13 +179,31 @@ All error responses include a message and timestamp, aiding in debugging and use
 ---
 
 ## 6. Dependencies
-
-- `spring-boot-starter-web`: For building REST APIs  
-- `spring-boot-starter-data-jpa`: ORM and data persistence  
-- `spring-boot-starter-validation`: Input validation  
-- `H2` or `MySQL` driver: Database connectivity  
-- `lombok`: For minimizing boilerplate code  
-- `junit`, `mockito`: Unit and integration testing
+ 
+The `pom.xml` file defines the project's dependencies and build configuration. Key dependencies include:
+ 
+### Spring Boot Starters
+- **spring-boot-starter-web**: For RESTful web applications.
+- **spring-boot-starter-data-jpa**: For JPA and Hibernate integration.
+- **spring-boot-starter-actuator**: For monitoring and management.
+- **spring-boot-starter-security**: For security features (if implemented).
+- **spring-boot-starter-test**: For unit and integration testing.
+ 
+### Spring Cloud Netflix Eureka Client
+- **spring-cloud-starter-netflix-eureka-client**: Enables service registration with Eureka.
+ 
+### Lombok
+- **lombok**: Reduces boilerplate Java code.
+ 
+### MySQL Connector/J
+- **mysql-connector-j**: JDBC driver for MySQL database connection.
+ 
+### SpringDoc OpenAPI Starter WebMVC UI
+- **springdoc-openapi-starter-webmvc-ui**: Generates OpenAPI (Swagger) documentation.
+ 
+### Spring Boot DevTools
+- **spring-boot-devtools**: Provides development-time features like automatic restarts.
+ 
 
 ---
 
