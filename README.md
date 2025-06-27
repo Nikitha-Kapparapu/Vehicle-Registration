@@ -7,27 +7,27 @@ This document provides a low-level overview of the `Reservation-Service` module,
 ## Table of Contents
 
 1. [Project Overview](#1-project-overview)  
-   - [Features](#features)
+   * [1.1 Features](#11-features)
 
 2. [Architecture](#2-architecture)  
-   - [Component Diagram](#22-component-diagram)
-   - [Sequence Diagram](#42-sequence-diagram)  
- 
+   * [2.1 Component Diagram](#21-component-diagram)  
+   * [2.2 Sequence Diagram](#22-sequence-diagram)
 
 3. [Database Design](#3-database-design)  
-   - [Reservation Table](#31-reservation-table)
+   * [3.1 Reservation Table](#31-reservation-table)
 
 4. [API Endpoints](#4-api-endpoints)  
-   - [Reservation Management](#41-reservation-management)  
-   - [Swagger Documentation](#42-swagger-documentation)
+   * [4.1 Reservation Management](#41-reservation-management)  
+   * [4.2 Swagger Documentation](#42-swagger-documentation)
 
-5. [Error Handling](#5-error-handling)
+5. [Error Handling](#5-error-handling)  
 
-6. [Dependencies](#6-dependencies)
+6. [Dependencies](#6-dependencies)  
 
-7. [Deployment](#7-deployment)
+7. [Deployment](#7-deployment)  
 
 ---
+
 
 ## 1. Project Overview
 
