@@ -1,6 +1,6 @@
-# Reservation-Service Module Low-Level Documentation
+# Billing-Service Module Low-Level Documentation
 
-This document provides a low-level overview of the `Reservation-Service` module, a microservice within the Parking Management System (PMS) responsible for managing parking slot reservations.
+This document provides a low-level overview of the `Billing-Service` module, a microservice within the Vehicle Parking Management System (VPMS) responsible for managing billing and invoice generation.
 
 ---
 
@@ -14,10 +14,10 @@ This document provides a low-level overview of the `Reservation-Service` module,
    * [2.2 Sequence Diagram](#22-sequence-diagram)
 
 3. [Database Design](#3-database-design)  
-   * [3.1 Reservation Table](#31-reservation-table)
+   * [3.1 Invoice Table](#31-invoice-table)
 
 4. [API Endpoints](#4-api-endpoints)  
-   * [4.1 Reservation Management](#41-reservation-management)  
+   * [4.1 Invoice Management](#41-invoice-management)  
    * [4.2 Swagger Documentation](#42-swagger-documentation)
 
 5. [Error Handling](#5-error-handling)  
@@ -29,63 +29,55 @@ This document provides a low-level overview of the `Reservation-Service` module,
 
 ---
 
-
 ## 1. Project Overview
 
-The `Reservation-Service` module is a critical component of the PMS, enabling users to create, update, view, and cancel parking slot reservations. It ensures data integrity, prevents double bookings, and works seamlessly with user and slot management services.
+The `Billing-Service` module is a critical component of the VPMS, enabling users to calculate and generate invoices for parking services. It ensures accurate billing based on parking duration and integrates seamlessly with other modules like reservation and user management.
 
 ### 1.1 Features
 
-- **Create Reservations**
-  - Accepts requests to book a parking slot for a specific time frame.
-  - Validates availability before creating a record.
-  - Prevents overlapping reservations for the same slot.
+- **Generate Invoices**
+  - Calculates parking charges based on entry and exit times.
+  - Generates invoices with payment status and method.
 
-- **View Reservations**
-  - Fetch reservations by user ID or reservation ID.
-  - Supports filtering and sorting for better usability.
+- **View Invoices**
+  - Fetch invoices by user ID or invoice ID.
+  - Supports listing all invoices for administrative purposes.
 
-- **Update Reservations**
-  - Allows modification of slot, time window, or vehicle number.
-  - Validates updated data to avoid conflicts.
-
-- **Cancel Reservations**
-  - Allows users to cancel an existing reservation.
-  - Updates reservation status accordingly by checking slot availability.
+- **Calculate Charges**
+  - Provides an endpoint to calculate charges dynamically based on parking duration.
 
 ---
 
 ## 2. Architecture
 
-The `Reservation-Service` follows a **layered architecture** using **Spring Boot** and communicates with other PMS modules via REST APIs. The service relies on a relational database (e.g., MySQL or H2) to manage persistence.
+The `Billing-Service` follows a **layered architecture** using **Spring Boot** and communicates with other VPMS modules via REST APIs. The service relies on a relational database (e.g., MySQL) to manage persistence.
 
 ### 2.1 Component Diagram
-
 ```mermaid
 flowchart LR
 
   %% Groups
   subgraph Frontend [React Frontend]
     direction TB
-    F1[Reservation UI Components]
-    F2[Reservation API Client]
+    F1[Billing UI Components]
+    F2[Billing API Client]
   end
 
   subgraph Backend [Spring Boot Backend]
     direction TB
-    B1[ReservationController]
-    B2[ReservationService]
-    B3[ReservationRepository]
+    B1[InvoiceController]
+    B2[InvoiceService]
+    B3[InvoiceRepository]
   end
 
   subgraph Database [Relational Database]
     direction TB
-    D1[(Reservations Table)]
+    D1[(Invoice Table)]
   end
 
   %% DTO and Entity
-  E1[Reservation DTO]
-  E2[Reservation Entity]
+  E1[BillingRequest DTO]
+  E2[Invoice Entity]
 
   %% Connections
   F2 -->|HTTP/REST| B1
@@ -108,60 +100,57 @@ flowchart LR
   class E1,E2 model
 
 ```
-
 ### 2.2 Sequence Diagram
 
 ```mermaid
 sequenceDiagram
     participant User
     participant API Gateway
-    participant ReservationService
-    participant ReservationDB
+    participant BillingService
+    participant BillingDB
 
-    User->>API Gateway: POST /api/reservations (Reservation object)
-    API Gateway->>ReservationService: Route request
-    ReservationService->>ReservationService: Validate and check conflicts
-    ReservationService->>ReservationDB: Save reservation
-    ReservationDB-->>ReservationService: Confirm insert
-    ReservationService-->>API Gateway: Reservation created
-    API Gateway-->>User: Return reservation response
+    User->>API Gateway: POST /api/invoices/calculate (BillingRequest object)
+    API Gateway->>BillingService: Route request
+    BillingService->>BillingService: Calculate charges
+    BillingService->>BillingDB: Save invoice
+    BillingDB-->>BillingService: Confirm insert
+    BillingService-->>API Gateway: Invoice created
+    API Gateway-->>User: Return invoice response
 ```
 
 ## 3. Database Design
 
-### 3.1 Reservation Table
+### 3.1 Invoice Table
 
 | Column Name       | Data Type  | Description                             |
 |-------------------|------------|-----------------------------------------|
-| `reservation_id`  | bigint     | Primary key, auto-generated             |
+| `invoice_id`      | bigint     | Primary key, auto-generated             |
 | `user_id`         | bigint     | Foreign key to User table               |
 | `slot_id`         | bigint     | Foreign key to ParkingSlot table        |
-| `vehicle_number`  | varchar    | Vehicle registration number             |
-| `start_time`      | datetime   | Reservation start time                  |
-| `end_time`        | datetime   | Reservation end time                    |
-| `status`          | varchar    | Reservation status (e.g., Active, Canceled) |
+| `amount`          | double     | Total parking charges                   |
+| `payment_method`  | varchar    | Payment method (e.g., Cash, Card)       |
+| `status`          | varchar    | Invoice status (e.g., Paid, Unpaid)     |
+| `timestamp`       | datetime   | Invoice creation timestamp              |
 
 ---
 
 ## 4. API Endpoints
 
-### 4.1 Reservation Management
+### 4.1 Invoice Management
 
 | Endpoint                                | Method  | Description                      | Request/Params                          |
 |-----------------------------------------|---------|----------------------------------|------------------------------------------|
-| `/api/reservations`                     | POST    | Create a new reservation         | Reservation object (JSON)               |
-| `/api/reservations/user/{userId}`       | GET     | Get reservations for a user      | `userId` as path variable                |
-| `/api/reservations/{id}`                | GET     | Get reservation by ID            | `id` as path variable                    |
-| `/api/reservations/{id}`                | PUT     | Update an existing reservation   | Updated fields in request body          |
-| `/api/reservations/{id}`                | DELETE  | Cancel a reservation             | `id` as path variable                    |
+| `/api/invoices`                         | POST    | Create a new invoice             | Invoice object (JSON)                   |
+| `/api/invoices`                         | GET     | Get all invoices                 | None                                     |
+| `/api/invoices/{id}`                    | GET     | Get invoice by ID                | `id` as path variable                   |
+| `/api/invoices/calculate`               | POST    | Calculate and generate invoice   | BillingRequest object (JSON)            |
 
 ---
 
 ### 4.2 Swagger Documentation
 
 Comprehensive API documentation is available via Swagger UI, typically accessible at:  
-[**http://localhost:8080/swagger-ui.html**](http://localhost:8080/swagger-ui.html)
-
+[**http://localhost:8085/swagger-ui.html**](http://localhost:8085/swagger-ui.html)
 
 ---
 
@@ -172,13 +161,13 @@ The module uses Spring Boot's global exception handling mechanisms to ensure con
 | HTTP Status Code | Description                          |
 |------------------|--------------------------------------|
 | `400 Bad Request`| Invalid input or request parameters  |
-| `404 Not Found`  | Reservation does not exist           |
-| `409 Conflict`   | Overlapping reservation or slot issue|
+| `404 Not Found`  | Invoice does not exist               |
 | `500 Internal Server Error` | Unexpected server-side failure |
 
 All error responses include a message and timestamp, aiding in debugging and user communication.
 
 ---
+
 ## 6. Maven Dependencies
  
 The `pom.xml` file defines the project's dependencies and build configuration. Key dependencies include:
@@ -202,9 +191,9 @@ The `pom.xml` file defines the project's dependencies and build configuration. K
 Below is an excerpt from the `application.properties` file:
  
 ```properties
-spring.application.name=reservation-service
+spring.application.name=billing-service
 server.port=8082
-spring.datasource.url=jdbc:mysql://localhost:3306/reservation_db
+spring.datasource.url=jdbc:mysql://localhost:3306/billing_db
 spring.datasource.username=root
 spring.datasource.password=root
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -225,7 +214,7 @@ eureka.instance.instance-id=${spring.application.name}:${spring.application.inst
  
 2. **Navigate to the Project Directory**  
     ```bash
-    cd parking-slot-service
+    cd billing-service
     ```
  
 3. **Build the Project**  
@@ -244,6 +233,6 @@ Ensure that the Eureka server and MySQL database are running before starting the
  
 ### Note
  
-Ensure MySQL is running and the `parking_db` database exists.  
+Ensure MySQL is running and the `billing_db` database exists.  
 Eureka server should be running on port `8761` for service registration.  
 Swagger UI is available at `/swagger-ui.html` for API exploration.
